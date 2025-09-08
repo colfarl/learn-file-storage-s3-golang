@@ -1,65 +1,37 @@
-# learn-file-storage-s3-golang-starter (Tubely)
+# Learn S3 File Storage in Go (Video & Image Handling)
 
-This repo contains the starter code for the Tubely application - the #1 tool for engagement bait - for the "Learn File Servers and CDNs with S3 and CloudFront" [course](https://www.boot.dev/courses/learn-file-servers-s3-cloudfront-golang) on [boot.dev](https://www.boot.dev)
+A small, production-leaning Go app that demonstrates **file storage done right** on AWS:
+- Uploading & downloading **large videos and images**
+- **Private vs. public** delivery models
+- **Presigned URLs**, **CloudFront** acceleration, and **least-privilege IAM**
+- **Video streaming optimization** (`-movflags +faststart`)
+- Pragmatic **error handling, timeouts, and retries**
 
-## Quickstart
+---
 
-*This is to be used as a *reference\* in case you need it, you should follow the instructions in the course rather than trying to do everything here.
+## Highlights — What I Practiced & Applied
 
-## 1. Install dependencies
+- **Amazon S3**  
+  - Object storage layout with logical prefixes (e.g., `landscape/…`, `portrait/…`)  
+  - Safe uploads with content type validation and server-side cleanup of temp files  
+  - Private object access using **presigned GET** URLs (time-bound, least privilege)
 
-- [Go](https://golang.org/doc/install)
-- `go mod download` to download all dependencies
-- [FFMPEG](https://ffmpeg.org/download.html) - both `ffmpeg` and `ffprobe` are required to be in your `PATH`.
+- **CloudFront (CDN)**  
+  - edge delivery for public assets to reduce latency & offload S3  
+  - Cache-control and content-type considerations for fast loads
 
-```bash
-# linux
-sudo apt update
-sudo apt install ffmpeg
+- **IAM, Permissions & Policies**  
+  - **Least-privilege** policy design for Put/Get on a single bucket & prefix set  
+  - Separation of duties: the API signs access; clients never see AWS credentials
 
-# mac
-brew update
-brew install ffmpeg
-```
+- **Optimizing for Video Streaming**  
+  - `ffprobe` to determine **aspect ratio** (bucket organization & UX)  
+  - `ffmpeg -movflags +faststart` to move the `moov` atom to the start of MP4 for **instant playback** on the web
 
-- [SQLite 3](https://www.sqlite.org/download.html) only required for you to manually inspect the database.
+- **Private & Public Cloud Operations**  
+  - Private video objects served via **presigned URLs**  
+  - Public assets (e.g., thumbnails) optionally via **CloudFront** for global performance
 
-```bash
-# linux
-sudo apt update
-sudo apt install sqlite3
+---
+Forked From: https://github.com/bootdotdev/learn-file-storage-s3-golang-starter
 
-# mac
-brew update
-brew install sqlite3
-```
-
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-
-## 2. Download sample images and videos
-
-```bash
-./samplesdownload.sh
-# samples/ dir will be created
-# with sample images and videos
-```
-
-## 3. Configure environment variables
-
-Copy the `.env.example` file to `.env` and fill in the values.
-
-```bash
-cp .env.example .env
-```
-
-You'll need to update values in the `.env` file to match your configuration, but _you won't need to do anything here until the course tells you to_.
-
-## 3. Run the server
-
-```bash
-go run .
-```
-
-- You should see a new database file `tubely.db` created in the root directory.
-- You should see a new `assets` directory created in the root directory, this is where the images will be stored.
-- You should see a link in your console to open the local web page.
